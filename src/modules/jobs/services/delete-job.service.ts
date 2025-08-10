@@ -26,18 +26,15 @@ export class DeleteJobService {
     jobExists.status = StatusEnum.ARCHIVED;
     jobExists.content = content;
 
-    // Atualizar apenas os campos necessários
     await this.jobRepository.updateJob(jobId, {
       status: StatusEnum.ARCHIVED,
       content: content,
     });
 
-    // Atualizar dateClosing e status das candidaturas relacionadas à vaga
     const currentDate = new Date();
     try {
       await this.candidacyService.updateDateClosingByJobId(jobId, currentDate);
     } catch (error) {
-      // Log do erro mas não falha o arquivamento da vaga
       console.error(
         'Erro ao atualizar dateClosing e status das candidaturas:',
         error,

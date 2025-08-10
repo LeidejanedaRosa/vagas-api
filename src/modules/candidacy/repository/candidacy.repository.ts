@@ -55,7 +55,6 @@ export class CandidacyRepository {
 
       candidacy.status = status;
 
-      // Se o status não for "em andamento", atualiza o dateClosing
       if (status !== CandidacyStatus.InProgress) {
         candidacy.dateClosing = new Date();
       }
@@ -91,11 +90,11 @@ export class CandidacyRepository {
       await this.candidacyRepository.update(
         {
           jobId: jobId,
-          status: CandidacyStatus.InProgress, // Só atualiza candidaturas que estão "em andamento"
+          status: CandidacyStatus.InProgress,
         },
         {
           dateClosing: dateClosing,
-          status: CandidacyStatus.Closed, // Muda status para "encerrada"
+          status: CandidacyStatus.Closed,
         },
       );
     } catch (error) {
