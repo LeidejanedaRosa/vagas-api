@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { DataSource, QueryRunner } from 'typeorm';
+import { DataSource, QueryRunner, Not } from 'typeorm';
 import { StatusEnum } from '../../../shared/enums/status.enum';
 import { JobRepository } from '../repository/job.repository';
 import { IJobsResponse } from '../interfaces/interfaces';
@@ -33,30 +33,33 @@ export class DeleteJobService {
     await queryRunner.startTransaction();
 
     try {
-      // Update job status to archived
       const updateResult = await queryRunner.manager
         .getRepository(JobsEntity)
-        .update(jobId, {
-          status: StatusEnum.ARCHIVED,
-          content: content,
-        });
+        .update(
+          {
+            id: jobId,
+            status: Not(StatusEnum.ARCHIVED),
+          },
+          {
+            status: StatusEnum.ARCHIVED,
+            content: content,
+          },
+        );
 
-      // Verify that the update actually affected a record
       if (updateResult.affected === 0) {
         await queryRunner.rollbackTransaction();
         this.logger.warn(
-          `Job ${jobId} was not found or already updated during archive operation`,
+          `Job ${jobId} was not found or already archived during archive operation`,
         );
 
         return {
           status: 404,
           data: {
-            message: 'Job could not be found or was already updated',
+            message: 'Job could not be found or was already archived',
           },
         };
       }
 
-      // Update candidacies date closing
       const currentDate = new Date();
       await this.candidacyService.updateDateClosingByJobId(
         jobId,
@@ -66,7 +69,9 @@ export class DeleteJobService {
 
       await queryRunner.commitTransaction();
 
-      this.logger.log(`Job ${jobId} archived successfully`);
+      this.logger.log(
+        `Job ${jobId} archived successfully (idempotent operation)`,
+      );
 
       return {
         status: 200,
