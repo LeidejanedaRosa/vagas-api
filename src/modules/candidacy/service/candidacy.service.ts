@@ -73,4 +73,22 @@ export class CandidacyService {
       );
     }
   }
+
+  async updateDateClosingByJobId(
+    jobId: string,
+    dateClosing: Date,
+  ): Promise<void> {
+    if (!jobId) {
+      throw new BadRequestException('jobId é obrigatório');
+    }
+
+    try {
+      await this.candidacyRepository.updateDateClosing(jobId, dateClosing);
+    } catch (error) {
+      throw new BadRequestException(
+        'Erro ao atualizar dateClosing e status das candidaturas: ' +
+          error.message,
+      );
+    }
+  }
 }

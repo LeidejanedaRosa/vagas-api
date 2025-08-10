@@ -52,7 +52,14 @@ export class CandidacyRepository {
       if (!candidacy) {
         throw new NotFoundException('Candidatura não encontrada');
       }
+
       candidacy.status = status;
+
+      // Se o status não for "em andamento", atualiza o dateClosing
+      if (status !== CandidacyStatus.InProgress) {
+        candidacy.dateClosing = new Date();
+      }
+
       await this.candidacyRepository.save(candidacy);
 
       return candidacy;
@@ -64,6 +71,38 @@ export class CandidacyRepository {
           'Erro ao atualizar o status da candidatura: ' + error.message,
         );
       }
+    }
+  }
+
+  async findAllByJobId(jobId: string): Promise<CandidacyEntity[]> {
+    try {
+      return await this.candidacyRepository.find({
+        where: { jobId: jobId },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao buscar candidaturas por jobId: ' + error.message,
+      );
+    }
+  }
+
+  async updateDateClosing(jobId: string, dateClosing: Date): Promise<void> {
+    try {
+      await this.candidacyRepository.update(
+        {
+          jobId: jobId,
+          status: CandidacyStatus.InProgress, // Só atualiza candidaturas que estão "em andamento"
+        },
+        {
+          dateClosing: dateClosing,
+          status: CandidacyStatus.Closed, // Muda status para "encerrada"
+        },
+      );
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao atualizar dateClosing e status das candidaturas: ' +
+          error.message,
+      );
     }
   }
 }

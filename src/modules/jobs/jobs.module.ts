@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CompanyModule } from '../company/company.module';
 import { CompanyRepository } from '../company/repository/company-repository';
 import { MailModule } from '../mails/mail.module';
+import { CandidacyModule } from '../candidacy/candidacy.module';
 import { JobsController } from './jobs.controller';
 import { JobRepository } from './repository/job.repository';
 import {
@@ -22,6 +23,7 @@ import { DeleteJobService } from './services/delete-job.service';
   imports: [
     MailModule,
     CompanyModule,
+    CandidacyModule,
     TypeOrmModule.forFeature([JobRepository, JobsEntity, CompaniesEntity]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
@@ -35,7 +37,7 @@ import { DeleteJobService } from './services/delete-job.service';
     DeleteJobService,
     SearchJobsService,
     JobRepository,
-    CompanyRepository
+    CompanyRepository,
   ],
 })
 export class JobsModule {}
