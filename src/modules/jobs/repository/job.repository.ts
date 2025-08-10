@@ -9,7 +9,7 @@ import { handleError } from '../../../shared/utils/handle-error.util';
 import { CreateJobDto } from '../dtos/create-job.dto';
 import { GetAllJobsDto } from '../dtos/get-all-jobs.dto';
 import { UpdateJobDto } from '../dtos/update-job.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -25,9 +25,11 @@ export class JobRepository {
   }
 
   async getAllJobsByCompanyId(companyId: string): Promise<JobsEntity[]> {
-    const jobs = await this.jobsRepository.find({
-      where: { company_id: companyId },
-    });
+    const jobs = await this.jobsRepository
+      .find({
+        where: { company_id: companyId },
+      })
+      .catch(handleError);
 
     return jobs;
   }
@@ -94,16 +96,17 @@ export class JobRepository {
     return queryBuilder.getOne().catch(handleError);
   }
 
-  async updateJob(id: string, data: UpdateJobDto | Partial<JobsEntity>) {
-    const jobs = await this.jobsRepository
-      .find({ where: { id } })
+  async updateJob(
+    id: string,
+    data: UpdateJobDto | Partial<JobsEntity>,
+  ): Promise<JobsEntity> {
+    const job = await this.jobsRepository
+      .findOne({ where: { id } })
       .catch(handleError);
 
-    if (!jobs || jobs.length === 0) {
-      throw new Error('Job not found');
+    if (!job) {
+      throw new NotFoundException('Job not found');
     }
-
-    const job = jobs[0];
 
     return this.jobsRepository
       .save({

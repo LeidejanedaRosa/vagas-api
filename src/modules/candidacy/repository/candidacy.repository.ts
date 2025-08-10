@@ -55,7 +55,7 @@ export class CandidacyRepository {
 
       candidacy.status = status;
 
-      if (status !== CandidacyStatus.InProgress) {
+      if (status !== CandidacyStatus.InProgress && !candidacy.dateClosing) {
         candidacy.dateClosing = new Date();
       }
 
@@ -74,11 +74,26 @@ export class CandidacyRepository {
   }
 
   async findAllByJobId(jobId: string): Promise<CandidacyEntity[]> {
+    if (!jobId) {
+      throw new BadRequestException('jobId é obrigatório');
+    }
     try {
-      return await this.candidacyRepository.find({
+      const candidacies = await this.candidacyRepository.find({
         where: { jobId: jobId },
       });
+      if (!candidacies.length) {
+        throw new NotFoundException(
+          'Nenhuma candidatura encontrada para esta vaga',
+        );
+      }
+      return candidacies;
     } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
       throw new InternalServerErrorException(
         'Erro ao buscar candidaturas por jobId: ' + error.message,
       );
