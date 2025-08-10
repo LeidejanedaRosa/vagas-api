@@ -3,6 +3,7 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
+import { EntityManager } from 'typeorm';
 import { CandidacyEntity } from 'src/database/entities/candidacy.entity';
 import { CandidacyStatus } from 'src/database/entities/candidancy-status.enum';
 import { CandidacyRepository } from 'src/modules/candidacy/repository/candidacy.repository';
@@ -77,13 +78,18 @@ export class CandidacyService {
   async updateDateClosingByJobId(
     jobId: string,
     dateClosing: Date,
+    entityManager?: EntityManager,
   ): Promise<void> {
     if (!jobId) {
       throw new BadRequestException('jobId é obrigatório');
     }
 
     try {
-      await this.candidacyRepository.updateDateClosing(jobId, dateClosing);
+      await this.candidacyRepository.updateDateClosing(
+        jobId,
+        dateClosing,
+        entityManager,
+      );
     } catch (error) {
       throw new BadRequestException(
         'Erro ao atualizar dateClosing e status das candidaturas: ' +

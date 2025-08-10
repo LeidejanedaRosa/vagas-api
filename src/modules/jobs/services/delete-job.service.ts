@@ -4,6 +4,7 @@ import { StatusEnum } from '../../../shared/enums/status.enum';
 import { JobRepository } from '../repository/job.repository';
 import { IJobsResponse } from '../interfaces/interfaces';
 import { CandidacyService } from '../../candidacy/service/candidacy.service';
+import { JobsEntity } from '../../../database/entities/jobs.entity';
 
 @Injectable()
 export class DeleteJobService {
@@ -33,14 +34,35 @@ export class DeleteJobService {
 
     try {
       // Update job status to archived
-      await queryRunner.manager.update('jobs', jobId, {
-        status: StatusEnum.ARCHIVED,
-        content: content,
-      });
+      const updateResult = await queryRunner.manager
+        .getRepository(JobsEntity)
+        .update(jobId, {
+          status: StatusEnum.ARCHIVED,
+          content: content,
+        });
+
+      // Verify that the update actually affected a record
+      if (updateResult.affected === 0) {
+        await queryRunner.rollbackTransaction();
+        this.logger.warn(
+          `Job ${jobId} was not found or already updated during archive operation`,
+        );
+
+        return {
+          status: 404,
+          data: {
+            message: 'Job could not be found or was already updated',
+          },
+        };
+      }
 
       // Update candidacies date closing
       const currentDate = new Date();
-      await this.candidacyService.updateDateClosingByJobId(jobId, currentDate);
+      await this.candidacyService.updateDateClosingByJobId(
+        jobId,
+        currentDate,
+        queryRunner.manager,
+      );
 
       await queryRunner.commitTransaction();
 

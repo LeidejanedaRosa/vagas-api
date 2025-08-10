@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, EntityManager } from 'typeorm';
 import { CandidacyEntity } from '../../../database/entities/candidacy.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CandidacyStatus } from 'src/database/entities/candidancy-status.enum';
@@ -100,9 +100,17 @@ export class CandidacyRepository {
     }
   }
 
-  async updateDateClosing(jobId: string, dateClosing: Date): Promise<void> {
+  async updateDateClosing(
+    jobId: string,
+    dateClosing: Date,
+    entityManager?: EntityManager,
+  ): Promise<void> {
     try {
-      await this.candidacyRepository.update(
+      const repository = entityManager
+        ? entityManager.getRepository(CandidacyEntity)
+        : this.candidacyRepository;
+
+      await repository.update(
         {
           jobId: jobId,
           status: CandidacyStatus.InProgress,
