@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { CompanyRepository } from './../../company/repository/company-repository';
+import { CompanyRepository } from '../../company/repository/company.repository';
 
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
