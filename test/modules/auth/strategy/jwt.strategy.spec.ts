@@ -20,6 +20,8 @@ import {
   TEST_USER_DATA,
 } from '../../../config/test-constants';
 
+const alphabeticalSort = (a: string, b: string): number => a.localeCompare(b);
+
 jest.mock('../../../../src/shared/utils/handle-error.util', () => ({
   handleError: jest.fn((error) => {
     throw error;
@@ -118,7 +120,9 @@ describe('JwtStrategy', () => {
 
       const resultKeys = Object.keys(result);
       const expectedKeys = Object.keys(expectedPrincipal);
-      expect(resultKeys.sort()).toEqual(expectedKeys.sort());
+      expect(resultKeys.sort(alphabeticalSort)).toEqual(
+        expectedKeys.sort(alphabeticalSort),
+      );
 
       expect(userRepository.findOneByEmail).toHaveBeenCalledWith(payload.email);
       expect(companyRepository.findOneByEmail).not.toHaveBeenCalled();
@@ -159,7 +163,9 @@ describe('JwtStrategy', () => {
 
       const resultKeys = Object.keys(result);
       const expectedKeys = Object.keys(expectedPrincipal);
-      expect(resultKeys.sort()).toEqual(expectedKeys.sort());
+      expect(resultKeys.sort(alphabeticalSort)).toEqual(
+        expectedKeys.sort(alphabeticalSort),
+      );
 
       expect(userRepository.findOneByEmail).toHaveBeenCalledWith(payload.email);
       expect(companyRepository.findOneByEmail).toHaveBeenCalledWith(
