@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Request } from 'express';
 import { MailService } from '../../../../src/modules/mails/mail.service';
 import { UserRepository } from '../../../../src/modules/user/repository/user.repository';
+import { CompanyRepository } from '../../../../src/modules/company/repository/company.repository';
 import { CreateUserService } from '../../../../src/modules/user/services';
 import { createUserMock } from '../../../mocks/user/create-user.mock';
 import { userMock } from '../../../mocks/user/user.mock';
@@ -11,13 +13,22 @@ class UserRepositoryMock {
   findOneByCpf = jest.fn();
 }
 
+class CompanyRepositoryMock {
+  findOneByEmail = jest.fn();
+}
+
 class MailServiceMock {
   sendUserCreationConfirmation = jest.fn();
 }
 
+const mockRequest = (): Partial<Request> => ({
+  ip: '127.0.0.1',
+});
+
 describe('CreateUserService', () => {
   let service: CreateUserService;
   let userRepository: UserRepositoryMock;
+  let companyRepository: CompanyRepositoryMock;
   let mailService: MailServiceMock;
 
   beforeEach(async () => {
@@ -29,6 +40,10 @@ describe('CreateUserService', () => {
           useClass: UserRepositoryMock,
         },
         {
+          provide: CompanyRepository,
+          useClass: CompanyRepositoryMock,
+        },
+        {
           provide: MailService,
           useClass: MailServiceMock,
         },
@@ -37,6 +52,7 @@ describe('CreateUserService', () => {
 
     service = module.get(CreateUserService);
     userRepository = module.get(UserRepository);
+    companyRepository = module.get(CompanyRepository);
     mailService = module.get(MailService);
   });
 
@@ -46,6 +62,7 @@ describe('CreateUserService', () => {
 
   describe('execute', () => {
     it('should be able to return a error when email exists', async () => {
+      companyRepository.findOneByEmail = jest.fn().mockResolvedValue(null);
       userRepository.findOneByEmail = jest
         .fn()
         .mockResolvedValue(createUserMock());
@@ -57,10 +74,11 @@ describe('CreateUserService', () => {
       const findOneByCpfSpy = jest.spyOn(userRepository, 'findOneByCpf');
       const createUserSpy = jest.spyOn(userRepository, 'createUser');
       const createUserDto = createUserMock();
-      const { data, status } = await service.execute(createUserDto);
+      const req = mockRequest() as Request;
+      const { data, status } = await service.execute(createUserDto, req);
       expect(status).toEqual(404);
       expect(data).toEqual({
-        message: 'Email already exists',
+        message: 'E-mail já cadastrado',
       });
       expect(findOneByEmailSpy).toBeCalled();
       expect(findOneByEmailSpy).toBeCalledTimes(1);
@@ -69,36 +87,39 @@ describe('CreateUserService', () => {
       expect(sendUserConfirmationSpy).not.toBeCalled();
     });
 
-    it('should be able to return a error when cpf exists', async () => {
-      userRepository.findOneByEmail = jest.fn().mockResolvedValue('');
-      userRepository.findOneByCpf = jest
+    it('should be able to return a error when company email exists', async () => {
+      companyRepository.findOneByEmail = jest
         .fn()
-        .mockResolvedValue(createUserMock());
-      const sendUserConfirmationSpy = jest.spyOn(
-        mailService,
-        'sendUserCreationConfirmation',
-      );
+        .mockResolvedValue({ id: 1, email: 'test@company.com' });
+      userRepository.findOneByEmail = jest.fn().mockResolvedValue(null);
       const findOneByEmailSpy = jest.spyOn(userRepository, 'findOneByEmail');
-      const findOneByCpfSpy = jest.spyOn(userRepository, 'findOneByCpf');
       const createUserSpy = jest.spyOn(userRepository, 'createUser');
       const createUserDto = createUserMock();
-      const { data, status } = await service.execute(createUserDto);
+      const req = mockRequest() as Request;
+      const { data, status } = await service.execute(createUserDto, req);
       expect(status).toEqual(404);
       expect(data).toEqual({
-        message: `This CPF is already in use`,
+        message: `E-mail já cadastrado`,
       });
       expect(findOneByEmailSpy).toBeCalled();
       expect(findOneByEmailSpy).toBeCalledTimes(1);
-      expect(findOneByCpfSpy).toBeCalled();
-      expect(findOneByCpfSpy).toBeCalledTimes(1);
       expect(createUserSpy).not.toBeCalled();
-      expect(sendUserConfirmationSpy).not.toBeCalled();
     });
 
     it('should be able to create an user', async () => {
-      userRepository.findOneByEmail = jest.fn().mockResolvedValue('');
-      userRepository.findOneByCpf = jest.fn().mockResolvedValue('');
-      userRepository.createUser = jest.fn().mockResolvedValue(userMock());
+      companyRepository.findOneByEmail = jest.fn().mockResolvedValue(null);
+      userRepository.findOneByEmail = jest.fn().mockResolvedValue(null);
+
+      const userWithSensitiveData = {
+        ...userMock(),
+        password: 'hashedPassword',
+        recoverPasswordToken: 'token123',
+        ip: '127.0.0.1',
+      };
+
+      userRepository.createUser = jest
+        .fn()
+        .mockResolvedValue(userWithSensitiveData);
       mailService.sendUserCreationConfirmation = jest
         .fn()
         .mockResolvedValue('');
@@ -107,16 +128,14 @@ describe('CreateUserService', () => {
         'sendUserCreationConfirmation',
       );
       const findOneByEmailSpy = jest.spyOn(userRepository, 'findOneByEmail');
-      const findOneByCpfSpy = jest.spyOn(userRepository, 'findOneByCpf');
       const createUserSpy = jest.spyOn(userRepository, 'createUser');
       const createUserDto = createUserMock();
-      const { data, status } = await service.execute(createUserDto);
+      const req = mockRequest() as Request;
+      const { data, status } = await service.execute(createUserDto, req);
       expect(status).toEqual(201);
       expect(data).toEqual(userMock());
       expect(findOneByEmailSpy).toBeCalled();
       expect(findOneByEmailSpy).toBeCalledTimes(1);
-      expect(findOneByCpfSpy).toBeCalled();
-      expect(findOneByCpfSpy).toBeCalledTimes(1);
       expect(createUserSpy).toBeCalled();
       expect(createUserSpy).toBeCalledTimes(1);
       expect(sendUserConfirmationSpy).toBeCalled();

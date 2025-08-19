@@ -42,7 +42,6 @@ describe('FindAllUsersService', () => {
         page: 1,
         take: 5,
         order: Order.ASC,
-        skip: 0,
       };
       const response = await service.execute(pageOptionsDto);
       expect(response).toEqual(getAllUserMock());

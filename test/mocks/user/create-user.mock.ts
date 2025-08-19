@@ -6,8 +6,7 @@ export const createUserMock = (): CreateUserDto => {
     name: 'Non-Admin for tests',
     email: 'user@teste.com',
     password: 'teste@12A',
-    cpf: '12345678910',
-    policies: true,
+    confirmPassword: 'teste@12A',
     type: UserRole.USER,
   };
 };

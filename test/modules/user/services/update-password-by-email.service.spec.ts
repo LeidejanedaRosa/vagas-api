@@ -1,11 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserRepository } from '../../../../src/modules/user/repository/user.repository';
+import { MailService } from '../../../../src/modules/mails/mail.service';
 import { UpdatePasswordByEmailService } from '../../../../src/modules/user/services/update-password-by-email.service';
 import { userMock } from '../../../mocks/user/user.mock';
 
 class UserRepositoryMock {
   findByToken = jest.fn();
   updatePassword = jest.fn();
+}
+
+class MailServiceMock {
+  sendUserConfirmation = jest.fn();
 }
 
 describe('UpdatePasswordByEmailService', () => {
@@ -19,6 +24,10 @@ describe('UpdatePasswordByEmailService', () => {
         {
           provide: UserRepository,
           useClass: UserRepositoryMock,
+        },
+        {
+          provide: MailService,
+          useClass: MailServiceMock,
         },
       ],
     }).compile();
@@ -42,7 +51,7 @@ describe('UpdatePasswordByEmailService', () => {
         confirmPassword: 'password',
       });
       expect(status).toEqual(400);
-      expect(data).toEqual({ message: 'User not found' });
+      expect(data).toEqual({ message: 'Usuário não encontrado!' });
       expect(findByTokenSpy).toBeCalled();
       expect(findByTokenSpy).toBeCalledTimes(1);
       expect(updatePassword).not.toBeCalled();
@@ -58,7 +67,7 @@ describe('UpdatePasswordByEmailService', () => {
         confirmPassword: 'teste',
       });
       expect(status).toEqual(400);
-      expect(data).toEqual({ message: 'Password mismatch' });
+      expect(data).toEqual({ message: 'As senhas não conferem!' });
       expect(findByTokenSpy).toBeCalled();
       expect(findByTokenSpy).toBeCalledTimes(1);
       expect(updatePassword).not.toBeCalled();
@@ -75,7 +84,7 @@ describe('UpdatePasswordByEmailService', () => {
         confirmPassword: 'password',
       });
       expect(status).toEqual(200);
-      expect(data).toEqual(userMock());
+      expect(data).toEqual({ message: 'Senha redefinida com sucesso!' });
       expect(findByTokenSpy).toBeCalled();
       expect(findByTokenSpy).toBeCalledTimes(1);
       expect(updatePassword).toBeCalled();
