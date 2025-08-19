@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { MailService } from '../../../modules/mails/mail.service';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UserRepository } from '../repository/user.repository';
-import { CompanyRepository } from 'src/modules/company/repository/company-repository';
+import { CompanyRepository } from 'src/modules/company/repository/company.repository';
 
 @Injectable()
 export class CreateUserService {
@@ -20,13 +20,11 @@ export class CreateUserService {
 
     data['ip'] = req.ip;
 
-    const emailAlreadyInUseCompany = await this.companyRepository.findOneByEmail(
-      email,
-    );
+    const emailAlreadyInUseCompany =
+      await this.companyRepository.findOneByEmail(email);
 
-    const emailAlreadyInUseUser = await this.userRepository.findOneByEmail(
-      email,
-    );
+    const emailAlreadyInUseUser =
+      await this.userRepository.findOneByEmail(email);
 
     if (emailAlreadyInUseCompany || emailAlreadyInUseUser) {
       return {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { MailService } from 'src/modules/mails/mail.service';
 import { CreateCompanyDto } from '../dtos/create-company.dto';
-import { CompanyRepository } from '../repository/company-repository';
+import { CompanyRepository } from '../repository/company.repository';
 import { UserRepository } from 'src/modules/user/repository/user.repository';
 
 @Injectable()
@@ -15,13 +15,11 @@ export class CreateCompanyService {
 
   async execute(data: CreateCompanyDto) {
     const { email, password, passwordConfirmation, cnpj } = data;
-    const emailAlreadyInUseCompany = await this.companyRepository.findOneByEmail(
-      email,
-    );
+    const emailAlreadyInUseCompany =
+      await this.companyRepository.findOneByEmail(email);
 
-    const emailAlreadyInUseUser = await this.userRepository.findOneByEmail(
-      email,
-    );
+    const emailAlreadyInUseUser =
+      await this.userRepository.findOneByEmail(email);
 
     if (emailAlreadyInUseCompany || emailAlreadyInUseUser) {
       return {

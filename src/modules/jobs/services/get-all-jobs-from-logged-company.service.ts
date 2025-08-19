@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CompanyRepository } from 'src/modules/company/repository/company-repository';
+import { CompanyRepository } from 'src/modules/company/repository/company.repository';
 import { IJobsResponse } from '../interfaces/interfaces';
 import { JobRepository } from '../repository/job.repository';
 
@@ -7,28 +7,28 @@ import { JobRepository } from '../repository/job.repository';
 export class GetAllJobsFromLoggedCompanyService {
   constructor(
     private companyRepository: CompanyRepository,
-    private jobsRepository: JobRepository
-    ) {}
+    private jobsRepository: JobRepository,
+  ) {}
 
-  async execute(companyId: string
-  ): Promise<IJobsResponse> {
+  async execute(companyId: string): Promise<IJobsResponse> {
     const jobs = await this.jobsRepository.getAllJobsByCompanyId(companyId);
 
-    if (!jobs) {
+    if (!jobs || jobs.length === 0) {
       return {
-        status: 400,
-        data:{
-          message: "This company has no jobs yet."
-        }
-      }
+        status: 200,
+        data: {
+          message: 'Logged company jobs listed successfully.',
+          content: [],
+        },
+      };
     }
 
     return {
       status: 200,
-      data:{
-        message: "Logged company jobs listed successfully.",
-        content: jobs
-      }
+      data: {
+        message: 'Logged company jobs listed successfully.',
+        content: jobs,
+      },
     };
   }
 }

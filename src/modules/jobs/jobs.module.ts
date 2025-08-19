@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CompanyModule } from '../company/company.module';
-import { CompanyRepository } from '../company/repository/company-repository';
+import { CompanyRepository } from '../company/repository/company.repository';
 import { MailModule } from '../mails/mail.module';
 import { JobsController } from './jobs.controller';
 import { JobRepository } from './repository/job.repository';
