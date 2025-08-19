@@ -6,6 +6,7 @@ import { CompanyRepository } from '../../../../src/modules/company/repository/co
 import { CreateUserService } from '../../../../src/modules/user/services';
 import { createUserMock } from '../../../mocks/user/create-user.mock';
 import { userMock } from '../../../mocks/user/user.mock';
+import { TEST_PASSWORDS, TEST_EMAILS } from '../../../config/test-constants';
 
 class UserRepositoryMock {
   createUser = jest.fn();
@@ -90,7 +91,7 @@ describe('CreateUserService', () => {
     it('should be able to return a error when company email exists', async () => {
       companyRepository.findOneByEmail = jest
         .fn()
-        .mockResolvedValue({ id: 1, email: 'test@company.com' });
+        .mockResolvedValue({ id: 1, email: TEST_EMAILS.COMPANY });
       userRepository.findOneByEmail = jest.fn().mockResolvedValue(null);
       const findOneByEmailSpy = jest.spyOn(userRepository, 'findOneByEmail');
       const createUserSpy = jest.spyOn(userRepository, 'createUser');
@@ -112,8 +113,8 @@ describe('CreateUserService', () => {
 
       const userWithSensitiveData = {
         ...userMock(),
-        password: 'hashedPassword',
-        recoverPasswordToken: 'token123',
+        password: TEST_PASSWORDS.HASHED,
+        recoverPasswordToken: TEST_PASSWORDS.TOKEN,
         ip: '127.0.0.1',
       };
 

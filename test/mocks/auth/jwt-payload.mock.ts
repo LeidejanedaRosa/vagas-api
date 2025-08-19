@@ -1,6 +1,8 @@
+import { TEST_EMAILS } from '../../config/test-constants';
+
 export const jwtPayloadMock = () => {
   return {
-    email: 'user@test.com',
+    email: TEST_EMAILS.USER,
     iat: 1640995200,
     exp: 1641081600,
   };
@@ -8,7 +10,7 @@ export const jwtPayloadMock = () => {
 
 export const companyJwtPayloadMock = () => {
   return {
-    email: 'company@test.com',
+    email: TEST_EMAILS.COMPANY,
     iat: 1640995200,
     exp: 1641081600,
   };
@@ -16,7 +18,7 @@ export const companyJwtPayloadMock = () => {
 
 export const invalidJwtPayloadMock = () => {
   return {
-    email: 'nonexistent@test.com',
+    email: TEST_EMAILS.INVALID,
     iat: 1640995200,
     exp: 1641081600,
   };

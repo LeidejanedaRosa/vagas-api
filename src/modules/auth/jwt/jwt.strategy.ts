@@ -4,7 +4,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UserRepository } from '../../user/repository/user.repository';
 import { CompanyRepository } from '../../company/repository/company.repository';
-import { AuthenticatedPrincipal } from '../types/principal.types';
 import {
   mapUserToPrincipal,
   mapCompanyToPrincipal,
@@ -38,9 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       const user = await this.userRepository.findOneByEmail(payload.email);
 
       if (user) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, ...safeUser } = user;
-        return { ...safeUser, userType: 'user' };
+        return mapUserToPrincipal(user);
       }
 
       const company = await this.companyRepository.findOneByEmail(
@@ -48,9 +45,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       );
 
       if (company) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, ...safeCompany } = company;
-        return { ...safeCompany, userType: 'company' };
+        return mapCompanyToPrincipal(company);
       }
 
       throw new UnauthorizedException('User not found or not authorized!');

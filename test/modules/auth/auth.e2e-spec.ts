@@ -13,6 +13,7 @@ import {
 } from '../../mocks/auth/user-login.mock';
 import { userMock } from '../../mocks/user/user.mock';
 import { companyMock } from '../../mocks/auth/company.mock';
+import { TEST_PASSWORDS, TEST_EMAILS } from '../../config/test-constants';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -163,25 +164,59 @@ describe('AuthController (e2e)', () => {
     it('should return 400 for invalid login data format', async () => {
       const invalidLoginData = {
         email: 'invalid-email',
-        password: '123',
+        password: TEST_PASSWORDS.SIMPLE,
         type: 'INVALID_TYPE',
       };
 
-      await request(app.getHttpServer())
+      const executeSpy = jest.spyOn(authLoginService, 'execute');
+
+      const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send(invalidLoginData)
         .expect(400);
+
+      expect(executeSpy).toHaveBeenCalledTimes(0);
+
+      expect(response.body).toHaveProperty('message');
+      expect(
+        Array.isArray(response.body.message) ||
+          typeof response.body.message === 'string',
+      ).toBe(true);
+
+      const errorMessage = Array.isArray(response.body.message)
+        ? response.body.message.join(' ')
+        : response.body.message;
+      expect(errorMessage.toLowerCase()).toMatch(/email|type|valid/);
+
+      executeSpy.mockRestore();
     });
 
     it('should return 400 for missing required fields', async () => {
       const incompleteLoginData = {
-        email: 'test@test.com',
+        email: TEST_EMAILS.USER,
       };
 
-      await request(app.getHttpServer())
+      const executeSpy = jest.spyOn(authLoginService, 'execute');
+
+      const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send(incompleteLoginData)
         .expect(400);
+
+      expect(executeSpy).toHaveBeenCalledTimes(0);
+
+      expect(response.body).toHaveProperty('message');
+      expect(
+        Array.isArray(response.body.message) ||
+          typeof response.body.message === 'string',
+      ).toBe(true);
+
+      const errorMessage = Array.isArray(response.body.message)
+        ? response.body.message.join(' ')
+        : response.body.message;
+      expect(errorMessage.toLowerCase()).toMatch(/password|required/);
+
+      executeSpy.mockRestore();
     });
   });
 });

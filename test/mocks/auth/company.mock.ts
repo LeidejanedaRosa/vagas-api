@@ -1,10 +1,17 @@
+import {
+  TEST_IDS,
+  TEST_EMAILS,
+  TEST_COMPANY_DATA,
+  TEST_PASSWORDS,
+} from '../../config/test-constants';
+
 export const companyMock = () => {
   return {
-    id: '729c7919-583c-40a5-b0ca-137e282345d4',
-    companyName: 'Test Company Ltd',
-    email: 'company@test.com',
-    password: '$2b$10$hashedpassword',
-    cnpj: '12345678000123',
+    id: TEST_IDS.COMPANY_ID,
+    companyName: TEST_COMPANY_DATA.NAME,
+    email: TEST_EMAILS.COMPANY,
+    password: TEST_PASSWORDS.HASHED_BCRYPT,
+    cnpj: TEST_COMPANY_DATA.CNPJ,
     about: 'A test company for unit tests',
     phone: '11987654321',
     address: 'Test Street, 123',
@@ -21,11 +28,11 @@ export const companyMock = () => {
 
 export const companyWithUnconfirmedEmailMock = () => {
   return {
-    id: '729c7919-583c-40a5-b0ca-137e282345d4',
+    id: TEST_IDS.COMPANY_ID,
     companyName: 'Unconfirmed Company Ltd',
-    email: 'unconfirmed@test.com',
-    password: '$2b$10$hashedpassword',
-    cnpj: '12345678000124',
+    email: TEST_EMAILS.UNCONFIRMED_COMPANY,
+    password: TEST_PASSWORDS.HASHED_BCRYPT,
+    cnpj: TEST_COMPANY_DATA.UNCONFIRMED_CNPJ,
     mailConfirm: false,
     policies: true,
     created_at: '2023-02-21T00:25:07.000Z',
@@ -35,10 +42,10 @@ export const companyWithUnconfirmedEmailMock = () => {
 
 export const companyEntityMock = () => {
   return {
-    id: '729c7919-583c-40a5-b0ca-137e282345d4',
-    companyName: 'Test Company Ltd',
-    email: 'company@test.com',
-    cnpj: '12345678000123',
+    id: TEST_IDS.COMPANY_ID,
+    companyName: TEST_COMPANY_DATA.NAME,
+    email: TEST_EMAILS.COMPANY,
+    cnpj: TEST_COMPANY_DATA.CNPJ,
     about: 'A test company for unit tests',
     phone: '11987654321',
     address: 'Test Street, 123',

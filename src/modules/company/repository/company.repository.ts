@@ -26,18 +26,37 @@ export class CompanyRepository {
   async findAllCompany(
     pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<CompaniesEntity>> {
+    const allowedOrderColumns = [
+      'id',
+      'companyName',
+      'email',
+      'cnpj',
+      'companyType',
+      'companySize',
+      'uf',
+      'companySite',
+      'description',
+      'created_at',
+      'updated_at',
+      'mailConfirm',
+    ];
+
+    const orderColumn = allowedOrderColumns.includes(
+      pageOptionsDto.orderByColumn,
+    )
+      ? pageOptionsDto.orderByColumn
+      : 'created_at';
+
     const queryBuilder = this.companyRepository.createQueryBuilder('companies');
 
     queryBuilder
-      .orderBy(
-        `companies.${pageOptionsDto.orderByColumn}`,
-        pageOptionsDto.order,
-      )
+      .orderBy(`companies.${orderColumn}`, pageOptionsDto.order)
       .skip((pageOptionsDto.page - 1) * pageOptionsDto.take)
       .take(pageOptionsDto.take);
 
-    const itemCount = await queryBuilder.getCount().catch(handleError);
-    const { entities } = await queryBuilder.getRawAndEntities();
+    const [entities, itemCount] = await queryBuilder
+      .getManyAndCount()
+      .catch(handleError);
 
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
 

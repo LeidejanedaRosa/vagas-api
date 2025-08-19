@@ -15,6 +15,7 @@ import {
   companyMock,
   companyWithUnconfirmedEmailMock,
 } from '../../../mocks/auth/company.mock';
+import { TEST_PASSWORDS, TEST_EMAILS } from '../../../config/test-constants';
 
 jest.mock('bcrypt');
 const bcryptMock = bcrypt as jest.Mocked<typeof bcrypt>;
@@ -74,7 +75,7 @@ describe('AuthLoginService', () => {
         const loginData = userLoginMock();
         const user = {
           ...userMock(),
-          password: 'hashedPassword',
+          password: TEST_PASSWORDS.HASHED,
           mailConfirm: true,
         };
 
@@ -94,7 +95,7 @@ describe('AuthLoginService', () => {
         );
         expect(bcryptMock.compare).toHaveBeenCalledWith(
           loginData.password,
-          'hashedPassword',
+          TEST_PASSWORDS.HASHED,
         );
         expect(jwtService.sign).toHaveBeenCalledWith({
           email: loginData.email,
@@ -105,7 +106,7 @@ describe('AuthLoginService', () => {
         const loginData = userWithUnconfirmedEmailMock();
         const user = {
           ...userMock(),
-          password: 'hashedPassword',
+          password: TEST_PASSWORDS.HASHED,
           mailConfirm: false,
         };
 
@@ -142,7 +143,7 @@ describe('AuthLoginService', () => {
         const loginData = userLoginMock();
         const user = {
           ...userMock(),
-          password: 'hashedPassword',
+          password: TEST_PASSWORDS.HASHED,
           mailConfirm: true,
         };
 
@@ -169,7 +170,7 @@ describe('AuthLoginService', () => {
         const loginData = companyLoginMock();
         const company = {
           ...companyMock(),
-          password: 'hashedPassword',
+          password: TEST_PASSWORDS.HASHED,
           mailConfirm: true,
         };
 
@@ -189,7 +190,7 @@ describe('AuthLoginService', () => {
         );
         expect(bcryptMock.compare).toHaveBeenCalledWith(
           loginData.password,
-          'hashedPassword',
+          TEST_PASSWORDS.HASHED,
         );
         expect(jwtService.sign).toHaveBeenCalledWith({
           email: loginData.email,
@@ -199,7 +200,7 @@ describe('AuthLoginService', () => {
       it('should return error when company email is not confirmed', async () => {
         const loginData = {
           ...companyLoginMock(),
-          email: 'unconfirmed@test.com',
+          email: TEST_EMAILS.UNCONFIRMED_COMPANY,
         };
         const company = companyWithUnconfirmedEmailMock();
 
@@ -236,7 +237,7 @@ describe('AuthLoginService', () => {
         const loginData = companyLoginMock();
         const company = {
           ...companyMock(),
-          password: 'hashedPassword',
+          password: TEST_PASSWORDS.HASHED,
           mailConfirm: true,
         };
 
@@ -263,8 +264,8 @@ describe('AuthLoginService', () => {
         const loginData = userLoginMock();
         const user = {
           ...userMock(),
-          password: 'hashedPassword',
-          recoverPasswordToken: 'some-token',
+          password: TEST_PASSWORDS.HASHED,
+          recoverPasswordToken: TEST_PASSWORDS.TOKEN,
           mailconfirm: true,
           ip: '192.168.1.1',
           mailConfirm: true,
@@ -287,8 +288,8 @@ describe('AuthLoginService', () => {
         const loginData = companyLoginMock();
         const company = {
           ...companyMock(),
-          password: 'hashedPassword',
-          recoverPasswordToken: 'some-token',
+          password: TEST_PASSWORDS.HASHED,
+          recoverPasswordToken: TEST_PASSWORDS.TOKEN,
           mailconfirm: true,
           ip: '192.168.1.1',
           mailConfirm: true,

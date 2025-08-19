@@ -1,12 +1,17 @@
 import { CreateUserDto } from '../../../src/modules/user/dtos/create-user.dto';
 import { UserRole } from '../../../src/shared/utils/userRole/userRole';
+import {
+  TEST_EMAILS,
+  TEST_USER_DATA,
+  TEST_PASSWORDS,
+} from '../../config/test-constants';
 
 export const createUserMock = (): CreateUserDto => {
   return {
-    name: 'Non-Admin for tests',
-    email: 'user@teste.com',
-    password: 'teste@12A',
-    confirmPassword: 'teste@12A',
+    name: TEST_USER_DATA.NAME,
+    email: TEST_EMAILS.USER,
+    password: TEST_PASSWORDS.CREATE_USER,
+    confirmPassword: TEST_PASSWORDS.CREATE_USER,
     type: UserRole.USER,
   };
 };

@@ -3,6 +3,7 @@ import { UserRepository } from '../../../../src/modules/user/repository/user.rep
 import { MailService } from '../../../../src/modules/mails/mail.service';
 import { UpdatePasswordByEmailService } from '../../../../src/modules/user/services/update-password-by-email.service';
 import { userMock } from '../../../mocks/user/user.mock';
+import { TEST_PASSWORDS } from '../../../config/test-constants';
 
 class UserRepositoryMock {
   findByToken = jest.fn();
@@ -46,9 +47,9 @@ describe('UpdatePasswordByEmailService', () => {
       const findByTokenSpy = jest.spyOn(userRepository, 'findByToken');
       const updatePassword = jest.spyOn(userRepository, 'updatePassword');
       const { status, data } = await service.execute({
-        recoverPasswordToken: '123',
-        password: 'password',
-        confirmPassword: 'password',
+        recoverPasswordToken: TEST_PASSWORDS.TOKEN,
+        password: TEST_PASSWORDS.SIMPLE,
+        confirmPassword: TEST_PASSWORDS.SIMPLE,
       });
       expect(status).toEqual(400);
       expect(data).toEqual({ message: 'Usuário não encontrado!' });
@@ -62,9 +63,9 @@ describe('UpdatePasswordByEmailService', () => {
       const findByTokenSpy = jest.spyOn(userRepository, 'findByToken');
       const updatePassword = jest.spyOn(userRepository, 'updatePassword');
       const { status, data } = await service.execute({
-        recoverPasswordToken: '123',
-        password: 'password',
-        confirmPassword: 'teste',
+        recoverPasswordToken: TEST_PASSWORDS.TOKEN,
+        password: TEST_PASSWORDS.SIMPLE,
+        confirmPassword: TEST_PASSWORDS.DIFFERENT,
       });
       expect(status).toEqual(400);
       expect(data).toEqual({ message: 'As senhas não conferem!' });
@@ -79,9 +80,9 @@ describe('UpdatePasswordByEmailService', () => {
       const findByTokenSpy = jest.spyOn(userRepository, 'findByToken');
       const updatePassword = jest.spyOn(userRepository, 'updatePassword');
       const { status, data } = await service.execute({
-        recoverPasswordToken: '123',
-        password: 'password',
-        confirmPassword: 'password',
+        recoverPasswordToken: TEST_PASSWORDS.TOKEN,
+        password: TEST_PASSWORDS.SIMPLE,
+        confirmPassword: TEST_PASSWORDS.SIMPLE,
       });
       expect(status).toEqual(200);
       expect(data).toEqual({ message: 'Senha redefinida com sucesso!' });
