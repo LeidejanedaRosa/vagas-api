@@ -271,7 +271,7 @@ describe('AuthLoginService', () => {
           password: TEST_PASSWORDS.HASHED,
           recoverPasswordToken: TEST_PASSWORDS.TOKEN,
           mailconfirm: true,
-          ip: TEST_IPS.PRIVATE_NETWORK,
+          ip: TEST_IPS.DOCUMENTATION_IP,
           mailConfirm: true,
         };
 
@@ -295,7 +295,7 @@ describe('AuthLoginService', () => {
           password: TEST_PASSWORDS.HASHED,
           recoverPasswordToken: TEST_PASSWORDS.TOKEN,
           mailconfirm: true,
-          ip: TEST_IPS.PRIVATE_NETWORK,
+          ip: TEST_IPS.DOCUMENTATION_IP,
           mailConfirm: true,
         };
 

@@ -57,11 +57,22 @@ export const TEST_IDS = {
   COMPANY_ID: '729c7919-583c-40a5-b0ca-137e282345d4',
 } as const;
 
-// IPs para testes
+// IPs para testes - usando endereços de documentação RFC-compliant
+// SECURITY NOTE: Todos os IPs abaixo são SEGUROS para uso em testes:
+// - São endereços reservados pelos RFCs para documentação e testes
+// - NÃO representam endereços de rede reais ou sensíveis
+// - São especificamente designados para uso em código de exemplo
 export const TEST_IPS = {
-  LOCALHOST: '127.0.0.1',
-  PRIVATE_NETWORK: '192.168.1.1',
-  MOCK_IP: '10.0.0.1',
+  // Localhost - endereço de loopback padrão para testes locais
+  LOCALHOST: process.env.TEST_IP_LOCALHOST || '127.0.0.1',
+
+  // RFC 5737 - Endereços reservados para documentação (TEST-NET-1)
+  // 192.0.2.0/24 é reservado para documentação e não deve ser usado em produção
+  DOCUMENTATION_IP: process.env.TEST_IP_DOCUMENTATION || '192.0.2.1',
+
+  // RFC 5737 - Endereços reservados para documentação (TEST-NET-2)
+  // 198.51.100.0/24 é reservado para documentação e exemplos
+  EXAMPLE_IP: process.env.TEST_IP_EXAMPLE || '198.51.100.1',
 } as const;
 
 // Emails para testes
