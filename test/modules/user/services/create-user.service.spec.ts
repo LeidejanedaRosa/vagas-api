@@ -6,7 +6,11 @@ import { CompanyRepository } from '../../../../src/modules/company/repository/co
 import { CreateUserService } from '../../../../src/modules/user/services';
 import { createUserMock } from '../../../mocks/user/create-user.mock';
 import { userMock } from '../../../mocks/user/user.mock';
-import { TEST_PASSWORDS, TEST_EMAILS } from '../../../config/test-constants';
+import {
+  TEST_PASSWORDS,
+  TEST_EMAILS,
+  TEST_IPS,
+} from '../../../config/test-constants';
 
 class UserRepositoryMock {
   createUser = jest.fn();
@@ -23,7 +27,7 @@ class MailServiceMock {
 }
 
 const mockRequest = (): Partial<Request> => ({
-  ip: '127.0.0.1',
+  ip: TEST_IPS.LOCALHOST,
 });
 
 describe('CreateUserService', () => {
@@ -115,7 +119,7 @@ describe('CreateUserService', () => {
         ...userMock(),
         password: TEST_PASSWORDS.HASHED,
         recoverPasswordToken: TEST_PASSWORDS.TOKEN,
-        ip: '127.0.0.1',
+        ip: TEST_IPS.LOCALHOST,
       };
 
       userRepository.createUser = jest

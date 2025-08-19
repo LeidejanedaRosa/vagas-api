@@ -15,7 +15,11 @@ import {
   companyMock,
   companyWithUnconfirmedEmailMock,
 } from '../../../mocks/auth/company.mock';
-import { TEST_PASSWORDS, TEST_EMAILS } from '../../../config/test-constants';
+import {
+  TEST_PASSWORDS,
+  TEST_EMAILS,
+  TEST_IPS,
+} from '../../../config/test-constants';
 
 jest.mock('bcrypt');
 const bcryptMock = bcrypt as jest.Mocked<typeof bcrypt>;
@@ -267,7 +271,7 @@ describe('AuthLoginService', () => {
           password: TEST_PASSWORDS.HASHED,
           recoverPasswordToken: TEST_PASSWORDS.TOKEN,
           mailconfirm: true,
-          ip: '192.168.1.1',
+          ip: TEST_IPS.PRIVATE_NETWORK,
           mailConfirm: true,
         };
 
@@ -291,7 +295,7 @@ describe('AuthLoginService', () => {
           password: TEST_PASSWORDS.HASHED,
           recoverPasswordToken: TEST_PASSWORDS.TOKEN,
           mailconfirm: true,
-          ip: '192.168.1.1',
+          ip: TEST_IPS.PRIVATE_NETWORK,
           mailConfirm: true,
         };
 

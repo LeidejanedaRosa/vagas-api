@@ -57,6 +57,13 @@ export const TEST_IDS = {
   COMPANY_ID: '729c7919-583c-40a5-b0ca-137e282345d4',
 } as const;
 
+// IPs para testes
+export const TEST_IPS = {
+  LOCALHOST: '127.0.0.1',
+  PRIVATE_NETWORK: '192.168.1.1',
+  MOCK_IP: '10.0.0.1',
+} as const;
+
 // Emails para testes
 export const TEST_EMAILS = {
   USER: 'user@teste.com',
@@ -77,4 +84,7 @@ export const TEST_COMPANY_DATA = {
 export const TEST_USER_DATA = {
   NAME: 'Non-Admin for tests',
   CPF: '12345678910',
+  PHONE: '11987654321',
+  MAIN_PHONE: '11999999999',
+  SECONDARY_PHONE: '11888888888',
 } as const;

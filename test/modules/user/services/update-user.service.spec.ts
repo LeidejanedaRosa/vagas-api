@@ -3,6 +3,7 @@ import { UserRepository } from '../../../../src/modules/user/repository/user.rep
 import { UpdateUserService } from '../../../../src/modules/user/services/update-user.service';
 import { FileUploadService } from '../../../../src/modules/upload/upload.service';
 import { userUpdateMock } from '../../../mocks/user/user-update.mock';
+import { TEST_USER_DATA } from '../../../config/test-constants';
 import { userMock, userEntityMock } from '../../../mocks/user/user.mock';
 
 class UserRepositoryMock {
@@ -49,8 +50,8 @@ describe('UpdateUserService', () => {
 
       const updateDto = {
         name: 'Test',
-        mainPhone: '11999999999',
-        phone: '11888888888',
+        mainPhone: TEST_USER_DATA.MAIN_PHONE,
+        phone: TEST_USER_DATA.SECONDARY_PHONE,
         city: 'São Paulo',
         state: 'SP',
       };
@@ -90,8 +91,8 @@ describe('UpdateUserService', () => {
 
       const updateDto = {
         name: 'Test',
-        mainPhone: '11999999999',
-        phone: '11888888888',
+        mainPhone: TEST_USER_DATA.MAIN_PHONE,
+        phone: TEST_USER_DATA.SECONDARY_PHONE,
         city: 'São Paulo',
         state: 'SP',
         profileKey: 'old-key-to-delete',
@@ -121,8 +122,8 @@ describe('UpdateUserService', () => {
 
       const updateDto = {
         name: 'Test',
-        mainPhone: '11999999999',
-        phone: '11888888888',
+        mainPhone: TEST_USER_DATA.MAIN_PHONE,
+        phone: TEST_USER_DATA.SECONDARY_PHONE,
         city: 'São Paulo',
         state: 'SP',
       };

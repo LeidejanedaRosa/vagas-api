@@ -3,6 +3,7 @@ import {
   TEST_EMAILS,
   TEST_COMPANY_DATA,
   TEST_PASSWORDS,
+  TEST_USER_DATA,
 } from '../../config/test-constants';
 
 export const companyMock = () => {
@@ -13,7 +14,7 @@ export const companyMock = () => {
     password: TEST_PASSWORDS.HASHED_BCRYPT,
     cnpj: TEST_COMPANY_DATA.CNPJ,
     about: 'A test company for unit tests',
-    phone: '11987654321',
+    phone: TEST_USER_DATA.PHONE,
     address: 'Test Street, 123',
     city: 'Test City',
     state: 'Test State',
@@ -47,7 +48,7 @@ export const companyEntityMock = () => {
     email: TEST_EMAILS.COMPANY,
     cnpj: TEST_COMPANY_DATA.CNPJ,
     about: 'A test company for unit tests',
-    phone: '11987654321',
+    phone: TEST_USER_DATA.PHONE,
     address: 'Test Street, 123',
     city: 'Test City',
     state: 'Test State',

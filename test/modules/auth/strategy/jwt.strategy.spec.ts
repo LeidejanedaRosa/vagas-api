@@ -17,6 +17,7 @@ import {
   TEST_PASSWORDS,
   TEST_EMAILS,
   TEST_COMPANY_DATA,
+  TEST_USER_DATA,
 } from '../../../config/test-constants';
 
 jest.mock('../../../../src/shared/utils/handle-error.util', () => ({
@@ -87,7 +88,7 @@ describe('JwtStrategy', () => {
         email: TEST_EMAILS.USER,
         password: TEST_PASSWORDS.HASHED,
         type: 'USER',
-        phone: '11987654321',
+        phone: TEST_USER_DATA.PHONE,
         policies: true,
         ip: null,
         mainPhone: null,
@@ -194,7 +195,7 @@ describe('JwtStrategy', () => {
         email: TEST_EMAILS.USER,
         password: TEST_PASSWORDS.SENSITIVE,
         type: 'USER',
-        phone: '11987654321',
+        phone: TEST_USER_DATA.PHONE,
         policies: true,
         ip: null,
         mainPhone: null,
