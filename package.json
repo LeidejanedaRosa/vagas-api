@@ -46,7 +46,7 @@
     "class-validator": "^0.14.0",
     "cpf-cnpj-validator": "^1.0.3",
     "dotenv": "^16.4.5",
-    "handlebars": "^4.7.8",
+    "handlebars": "^4.7.10",
     "install": "^0.13.0",
     "linkedin-backend": "file:",
     "node-cron": "^3.0.3",
